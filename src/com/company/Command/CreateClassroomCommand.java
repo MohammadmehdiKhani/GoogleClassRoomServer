@@ -1,6 +1,6 @@
 package com.company.Command;
 
-public class CreateClassCommand {
+public class CreateClassroomCommand {
     public String teacher;
     public String name;
     public String description;
@@ -8,10 +8,10 @@ public class CreateClassCommand {
     public String uniqueCode;
 
 
-    private CreateClassCommand() {
+    private CreateClassroomCommand() {
     }
 
-    public CreateClassCommand(String teacher, String name, String description, String room) {
+    public CreateClassroomCommand(String teacher, String name, String description, String room) {
         this.teacher = teacher;
         this.name = name;
         this.description = description;

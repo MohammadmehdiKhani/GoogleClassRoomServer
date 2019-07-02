@@ -1,11 +1,11 @@
 package com.company;
 
-import com.company.Command.CreateClassCommand;
-import com.company.Domain.Class;
+import com.company.Command.CreateClassroomCommand;
+import com.company.Domain.Classroom;
 import com.company.Infrastructure.Response;
 import com.company.Infrastructure.ResponseMeta;
 import com.company.Domain.User;
-import com.company.Repository.ClassRepository;
+import com.company.Repository.ClassroomRepository;
 import com.company.Repository.UserRepository;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,7 +14,6 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 
 public class Server {
     private int _port;
@@ -53,7 +52,7 @@ public class Server {
                         Login(data, dataOutputStream);
                         break;
                     case "createClass":
-                        CreateClass(data, dataOutputStream);
+                        CreateClassroom(data, dataOutputStream);
                         break;
                 }
                 socket.close();
@@ -116,26 +115,25 @@ public class Server {
         }
     }
 
-    private void CreateClass(String data, DataOutputStream dataOutputStream) throws IOException {
-        CreateClassCommand createClassCommand = _objectMapper.readValue(data, CreateClassCommand.class);
-        User teacher = UserRepository.get(createClassCommand.teacher);
+    private void CreateClassroom(String data, DataOutputStream dataOutputStream) throws IOException {
+        CreateClassroomCommand createClassroomCommand = _objectMapper.readValue(data, CreateClassroomCommand.class);
+        User teacher = UserRepository.get(createClassroomCommand.teacher);
         String randomString = Helper.getRandomAlphaNumeric(5);
-        Class newClass = new Class(createClassCommand.name, createClassCommand.description, createClassCommand.room, randomString);
-        teacher.AddClassToCreate(newClass);
+        Classroom classroom = new Classroom(createClassroomCommand.name, createClassroomCommand.description, createClassroomCommand.room, randomString);
+        teacher.addClassToCreates(classroom);
 
-        UserRepository.delete(createClassCommand.teacher);
+        UserRepository.delete(teacher.username);
         UserRepository.write(teacher);
 
-        User teacherOfClass = new User();
-        teacherOfClass.username = teacher.username;
-        newClass.AddTeacher(teacherOfClass);
-        //ClassRepository.write(newClass);
+        teacher.emptyLists();
+        classroom.addTeacher(teacher);
+        ClassroomRepository.Write(classroom);
 
         String result = "success";
-        String message = "Class successfully created";
+        String message = "Classroom successfully created";
 
         ResponseMeta meta = new ResponseMeta(result, message);
-        Response response = new Response(meta, newClass);
+        Response response = new Response(meta, classroom);
         String responseString = _objectMapper.writeValueAsString(response);
 
         dataOutputStream.writeUTF(responseString);

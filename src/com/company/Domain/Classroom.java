@@ -3,21 +3,21 @@ package com.company.Domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Class {
+public class Classroom {
     public String name;
     public String description;
     public String room;
     public String code;
 
-    public List<User> techers;
+    public List<User> teachers;
     public List<User> students;
 
-    public Class() {
-        techers = new ArrayList<>();
+    public Classroom() {
+        teachers = new ArrayList<>();
         students = new ArrayList<>();
     }
 
-    public Class(String name, String description, String room, String code) {
+    public Classroom(String name, String description, String room, String code) {
         this();
         this.name = name;
         this.description = description;
@@ -25,11 +25,16 @@ public class Class {
         this.code = code;
     }
 
-    public void AddTeacher(User teacher) {
-        techers.add(teacher);
+    public void addTeacher(User teacher) {
+        teachers.add(teacher);
     }
 
-    public void AddStudent(User student) {
+    public void addStudent(User student) {
         students.add(student);
+    }
+
+    public void EmptyLists(){
+        teachers = new ArrayList<>();
+        students = new ArrayList<>();
     }
 }
