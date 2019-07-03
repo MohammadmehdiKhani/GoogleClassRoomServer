@@ -144,31 +144,30 @@ public class Server {
     }
 
     private void JoinClassroom(String data, DataOutputStream dataOutputStream) {
-
         try {
-            //diSerial
+            //Deserialize
             JoinClassroomCommand joinClassroomCommand = _objectMapper.readValue(data, JoinClassroomCommand.class);
+            User userToJoin = UserRepository.get(joinClassroomCommand.username);
             String code = joinClassroomCommand.code;
-            String username = joinClassroomCommand.username;
-            String password = joinClassroomCommand.password;
 
-            //add student on classroom
+            //Add student on classroom
             Classroom classroom = ClassroomRepository.get(code);
-            User user = new User(username, password);
-            classroom.addStudent(user);
+            userToJoin.emptyLists();
+            classroom.addStudent(userToJoin);
+
             ClassroomRepository.delete(code);
             ClassroomRepository.write(classroom);
 
-            //add classroom on user1
-            User user1 = UserRepository.get(username);
-            user.addClassToJoins(classroom);
-            UserRepository.delete(username);
-            UserRepository.write(user1);
+            //Add classroom on user
+            classroom.emptyLists();
+            userToJoin = UserRepository.get(joinClassroomCommand.username);
+            userToJoin.addClassToJoins(classroom);
+
+            UserRepository.delete(userToJoin.username);
+            UserRepository.write(userToJoin);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 }

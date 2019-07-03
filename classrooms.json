@@ -1,6 +1,2 @@
-{"name":"math","description":"good des","room":"254","code":"BC2SW","teachers":[{"username":"ebi","password":"123456","creates":[],"joins":[]}],"students":[]}
-{"name":"nano","description":"des","room":"564","code":"EQWNU","teachers":[{"username":"ebi","password":"123456","creates":[],"joins":[]}],"students":[]}
-{"name":"pisics","description":"des","room":"987","code":"7X6YC","teachers":[{"username":"ebi","password":"123456","creates":[],"joins":[]}],"students":[]}
-{"name":"adabiat","description":"des","room":"101","code":"NQQ2Y","teachers":[{"username":"mmd","password":"akbari","creates":[],"joins":[]}],"students":[]}
-{"name":"math2","description":"des","room":"11202","code":"9RKFH","teachers":[{"username":"hesam","password":"123456","creates":[],"joins":[]}],"students":[]}
-{"name":"physics","description":"des","room":"120","code":"CHBRX","teachers":[{"username":"hesam","password":"123456","creates":[],"joins":[]}],"students":[]}
+{"name":"math","description":"des","room":"312","code":"1XRRR","teachers":[{"username":"ebi","password":"123456","creates":[],"joins":[]}],"students":[{"username":"esi","password":"esi","creates":[],"joins":[]},{"username":"fifi","password":"fifi","creates":[],"joins":[]},{"username":"fifi","password":"fifi","creates":[],"joins":[]}]}
+{"name":"AP","description":"final","room":"004","code":"G5VBA","teachers":[{"username":"ebi","password":"123456","creates":[],"joins":[]}],"students":[{"username":"esi","password":"123456","creates":[],"joins":[]}]}

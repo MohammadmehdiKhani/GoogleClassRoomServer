@@ -80,7 +80,6 @@ public class ClassroomRepository {
 
     public static void delete() {
         try {
-            File file = new File("users.json");
             PrintWriter writer = new PrintWriter(file);
             writer.print("");
             writer.close();

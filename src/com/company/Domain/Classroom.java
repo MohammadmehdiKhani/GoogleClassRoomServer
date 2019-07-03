@@ -33,7 +33,7 @@ public class Classroom {
         students.add(student);
     }
 
-    public void EmptyLists(){
+    public void emptyLists(){
         teachers = new ArrayList<>();
         students = new ArrayList<>();
     }
