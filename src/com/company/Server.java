@@ -1,6 +1,7 @@
 package com.company;
 
 import com.company.Command.CreateClassroomCommand;
+import com.company.Command.JoinClassroomCommand;
 import com.company.Domain.Classroom;
 import com.company.Infrastructure.Response;
 import com.company.Infrastructure.ResponseMeta;
@@ -54,6 +55,8 @@ public class Server {
                     case "createClass":
                         CreateClassroom(data, dataOutputStream);
                         break;
+                    case "joinClass":
+                        JoinClassroom(data, dataOutputStream);
                 }
                 socket.close();
                 dataInputStream.close();
@@ -127,7 +130,7 @@ public class Server {
 
         teacher.emptyLists();
         classroom.addTeacher(teacher);
-        ClassroomRepository.Write(classroom);
+        ClassroomRepository.write(classroom);
 
         String result = "success";
         String message = "Classroom successfully created";
@@ -138,5 +141,34 @@ public class Server {
 
         dataOutputStream.writeUTF(responseString);
         dataOutputStream.flush();
+    }
+
+    private void JoinClassroom(String data, DataOutputStream dataOutputStream) {
+
+        try {
+            //diSerial
+            JoinClassroomCommand joinClassroomCommand = _objectMapper.readValue(data, JoinClassroomCommand.class);
+            String code = joinClassroomCommand.code;
+            String username = joinClassroomCommand.username;
+            String password = joinClassroomCommand.password;
+
+            //add student on classroom
+            Classroom classroom = ClassroomRepository.get(code);
+            User user = new User(username, password);
+            classroom.addStudent(user);
+            ClassroomRepository.delete(code);
+            ClassroomRepository.write(classroom);
+
+            //add classroom on user1
+            User user1 = UserRepository.get(username);
+            user.addClassToJoins(classroom);
+            UserRepository.delete(username);
+            UserRepository.write(user1);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

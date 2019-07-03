@@ -24,6 +24,10 @@ public class User {
         creates.add(classroom);
     }
 
+    public void addClassToJoins(Classroom classroom) {
+        joins.add(classroom);
+    }
+
     public void emptyLists() {
         creates = new ArrayList<>();
         joins = new ArrayList<>();
