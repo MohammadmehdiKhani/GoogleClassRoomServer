@@ -5,8 +5,6 @@ public class CreateClassroomCommand {
     public String name;
     public String description;
     public String room;
-    public String uniqueCode;
-
 
     private CreateClassroomCommand() {
     }
@@ -17,9 +15,5 @@ public class CreateClassroomCommand {
         this.description = description;
         this.room = room;
     }
-
-    public void setUniqueCode(String code)
-    {
-        this.uniqueCode = code;
-    }
 }
+

@@ -47,6 +47,34 @@ public class ClassroomRepository {
         return null;
     }
 
+    public static List<Classroom> getClassroomsOfUser(String username){
+        List<Classroom> result = null;
+        try {
+            result = new ArrayList<>();
+            Scanner scanner = new Scanner(file);
+
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                Classroom classroomFromFile = objectmapper.readValue(line, Classroom.class);
+
+                List<User> teachers = classroomFromFile.teachers;
+                if (teachers.stream().filter(tcr -> tcr.username.equals(username)).findAny().orElse(null) != null) {
+                    result.add(classroomFromFile);
+                }
+
+                List<User> students = classroomFromFile.students;
+                if (students.stream().filter(std -> std.username.equals(username)).findAny().orElse(null) != null) {
+                    result.add(classroomFromFile);
+                }
+            }
+            scanner.close();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return result;
+    }
+
     public static void delete(String code) {
         try {
             List<String> lines = new ArrayList<String>();

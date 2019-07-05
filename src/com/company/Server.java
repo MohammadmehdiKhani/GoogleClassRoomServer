@@ -1,6 +1,7 @@
 package com.company;
 
 import com.company.Command.CreateClassroomCommand;
+import com.company.Command.GetClassroomsOfUser;
 import com.company.Command.JoinClassroomCommand;
 import com.company.Domain.Classroom;
 import com.company.Infrastructure.Response;
@@ -15,6 +16,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 public class Server {
     private int _port;
@@ -57,6 +59,8 @@ public class Server {
                         break;
                     case "joinClass":
                         JoinClassroom(data, dataOutputStream);
+                    case "getClassroomsOfUser":
+                        getClassroomsOfUser(data, dataOutputStream);
                 }
                 socket.close();
                 dataInputStream.close();
@@ -64,7 +68,7 @@ public class Server {
             }
 
         } catch (Exception exception) {
-            Exception ex = exception;
+            exception.printStackTrace();
         }
     }
 
@@ -109,7 +113,6 @@ public class Server {
             ResponseMeta responseMeta = new ResponseMeta(result, message);
             Response response = new Response(responseMeta, userFromRequest);
             String responseString = _objectMapper.writeValueAsString(response);
-
             dataOutputStream.writeUTF(responseString);
             dataOutputStream.flush();
 
@@ -138,7 +141,6 @@ public class Server {
         ResponseMeta meta = new ResponseMeta(result, message);
         Response response = new Response(meta, classroom);
         String responseString = _objectMapper.writeValueAsString(response);
-
         dataOutputStream.writeUTF(responseString);
         dataOutputStream.flush();
     }
@@ -154,7 +156,6 @@ public class Server {
             Classroom classroom = ClassroomRepository.get(code);
             userToJoin.emptyLists();
             classroom.addStudent(userToJoin);
-
             ClassroomRepository.delete(code);
             ClassroomRepository.write(classroom);
 
@@ -162,12 +163,35 @@ public class Server {
             classroom.emptyLists();
             userToJoin = UserRepository.get(joinClassroomCommand.username);
             userToJoin.addClassToJoins(classroom);
-
             UserRepository.delete(userToJoin.username);
             UserRepository.write(userToJoin);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    public void getClassroomsOfUser(String data, DataOutputStream dataOutputStream) {
+        try {
+            //Deserialize
+            GetClassroomsOfUser getClassroomsOfUser = _objectMapper.readValue(data, GetClassroomsOfUser.class);
+            List<Classroom> classrooms = ClassroomRepository.getClassroomsOfUser(getClassroomsOfUser.username);
+
+            //Return response
+            String result = "success";
+            String message = "Classroom successfully retrieved";
+
+            ResponseMeta meta = new ResponseMeta(result, message);
+            Response response = new Response(meta, classrooms);
+            String responseString = _objectMapper.writeValueAsString(response);
+
+            dataOutputStream.writeUTF(responseString);
+            dataOutputStream.flush();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
