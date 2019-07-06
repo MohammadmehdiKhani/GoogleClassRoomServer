@@ -1,12 +1,12 @@
 package com.company;
 
-import com.company.Command.CreateClassroomCommand;
-import com.company.Command.GetClassroomsOfUser;
-import com.company.Command.JoinClassroomCommand;
+import com.company.Command.*;
+import com.company.Domain.Assignment;
 import com.company.Domain.Classroom;
 import com.company.Infrastructure.Response;
 import com.company.Infrastructure.ResponseMeta;
 import com.company.Domain.User;
+import com.company.Repository.AssignmentRepository;
 import com.company.Repository.ClassroomRepository;
 import com.company.Repository.UserRepository;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -59,8 +59,16 @@ public class Server {
                         break;
                     case "joinClass":
                         JoinClassroom(data, dataOutputStream);
+                        break;
                     case "getClassroomsOfUser":
                         getClassroomsOfUser(data, dataOutputStream);
+                        break;
+                    case "isUsernameReserved":
+                        isUsernameReserved(data, dataOutputStream);
+                        break;
+                    case "createAssignment":
+                        createAssignment(data, dataOutputStream);
+                        break;
                 }
                 socket.close();
                 dataInputStream.close();
@@ -193,5 +201,57 @@ public class Server {
             e.printStackTrace();
         }
 
+    }
+
+
+    private void isUsernameReserved(String data, DataOutputStream dataOutputStream) {
+
+        try {
+            CheckUsernameExistCommand checkUsernameExistCommand = _objectMapper.readValue(data, CheckUsernameExistCommand.class);
+            String username = checkUsernameExistCommand.username;
+            String result = "fail";
+            String message = "username did not reserved yet";
+
+            boolean isUserNameExist = UserRepository.isUserExist(username);
+
+            if (isUserNameExist == true) {
+                result = "success";
+                message = "this username is Reserved ";
+            }
+
+            ResponseMeta responseMeta = new ResponseMeta(result, message);
+            Response response = new Response(responseMeta, null);
+            String responseString = _objectMapper.writeValueAsString(response);
+            dataOutputStream.writeUTF(responseString);
+            dataOutputStream.flush();
+
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+
+    }
+
+    private void createAssignment(String data, DataOutputStream dataOutputStream) {
+
+        try {
+            CreateAssignmentCommand createAssignmentCommand = _objectMapper.readValue(data, CreateAssignmentCommand.class);
+            Classroom classroom = ClassroomRepository.get(createAssignmentCommand.code);
+            Assignment assignment = new Assignment(createAssignmentCommand.title, createAssignmentCommand.description, createAssignmentCommand.points);
+            classroom.addAssignment(assignment);
+
+            ClassroomRepository.delete(classroom.code);
+            ClassroomRepository.write(classroom);
+
+            String result = "success";
+            String message = "Classroom successfully created";
+
+            ResponseMeta meta = new ResponseMeta(result, message);
+            Response response = new Response(meta, assignment);
+            String responseString = _objectMapper.writeValueAsString(response);
+            dataOutputStream.writeUTF(responseString);
+            dataOutputStream.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

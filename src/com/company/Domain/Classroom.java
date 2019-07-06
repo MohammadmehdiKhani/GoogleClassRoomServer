@@ -3,6 +3,7 @@ package com.company.Domain;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Classroom {
     public String name;
     public String description;
@@ -11,10 +12,12 @@ public class Classroom {
 
     public List<User> teachers;
     public List<User> students;
+    public List<Assignment> assignments;
 
     public Classroom() {
         teachers = new ArrayList<>();
         students = new ArrayList<>();
+        assignments = new ArrayList<>();
     }
 
     public Classroom(String name, String description, String room, String code) {
@@ -33,8 +36,13 @@ public class Classroom {
         students.add(student);
     }
 
-    public void emptyLists(){
+    public void addAssignment(Assignment assignment) {
+        assignments.add(assignment);
+    }
+
+    public void emptyLists() {
         teachers = new ArrayList<>();
         students = new ArrayList<>();
+        assignments = new ArrayList<>();
     }
 }
